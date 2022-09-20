@@ -3,7 +3,17 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public GameObject[] rawTiles;
+    public GameObject player;
+
     private float _tileSize;
+
+    private Tweener _tweener;
+    private Animator _playerAnimator;
+    private int _nextTween;
+    private Vector3 _posTopLeft;
+    private Vector3 _posTopRight;
+    private Vector3 _posBottomLeft;
+    private Vector3 _posBottomRight;
 
     private enum Tile
     {
@@ -213,6 +223,51 @@ public class LevelManager : MonoBehaviour
         {
             rawTile.SetActive(false);
         }
+
+        _tweener = gameObject.GetComponent<Tweener>();
+        _playerAnimator = player.GetComponent<Animator>();
+        _posTopLeft = new Vector3(_tileSize, -_tileSize, 0);
+        _posTopRight = new Vector3(_tileSize * 6, -_tileSize, 0);
+        _posBottomLeft = new Vector3(_tileSize, -_tileSize * 5, 0);
+        _posBottomRight = new Vector3(_tileSize * 6, -_tileSize * 5, 0);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (_tweener.TweenExists(player.transform)) return;
+
+        ResetTriggers();
+
+        switch (_nextTween)
+        {
+            case 0:
+                _tweener.AddTween(player.transform, _posTopLeft, _posTopRight, 2.5f);
+                _playerAnimator.SetTrigger("right");
+                break;
+            case 1:
+                _tweener.AddTween(player.transform, _posTopRight, _posBottomRight, 2.0f);
+                _playerAnimator.SetTrigger("down");
+                break;
+            case 2:
+                _tweener.AddTween(player.transform, _posBottomRight, _posBottomLeft, 2.5f);
+                _playerAnimator.SetTrigger("left");
+                break;
+            case 3:
+                _tweener.AddTween(player.transform, _posBottomLeft, _posTopLeft, 2.0f);
+                _playerAnimator.SetTrigger("up");
+                break;
+        }
+
+        _nextTween = (_nextTween + 1) % 4;
+    }
+
+    private void ResetTriggers()
+    {
+        _playerAnimator.ResetTrigger("right");
+        _playerAnimator.ResetTrigger("left");
+        _playerAnimator.ResetTrigger("up");
+        _playerAnimator.ResetTrigger("down");
     }
 
     GameObject GetGameObject(Tile tile)
