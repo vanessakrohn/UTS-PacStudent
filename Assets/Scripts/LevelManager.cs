@@ -15,6 +15,18 @@ public class LevelManager : MonoBehaviour
     private Vector3 _posBottomLeft;
     private Vector3 _posBottomRight;
 
+    private enum RawTile
+    {
+        Empty = 0,
+        OutsideCorner = 1,
+        OutsideWall = 2,
+        InsideCorner = 3,
+        InsideWall = 4,
+        StandardPellet = 5,
+        PowerPellet = 6,
+        Junction = 7
+    }
+
     private enum Tile
     {
         Empty,
@@ -41,99 +53,161 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Tile[,] tiles =
+        int[,] levelMap =
         {
-            {
-                Tile.OutsideCornerDownRight, Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal,
-                Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal,
-                Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal,
-                Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal,
-                Tile.OutsideWallHorizontal, Tile.JunctionDown
-            },
-            {
-                Tile.OutsideWallVertical, Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet,
-                Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet,
-                Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet,
-                Tile.InsideWallVertical
-            },
-            {
-                Tile.OutsideWallVertical, Tile.StandardPellet, Tile.InsideCornerDownRight, Tile.InsideWallHorizontal,
-                Tile.InsideWallHorizontal, Tile.InsideCornerDownLeft, Tile.StandardPellet, Tile.InsideCornerDownRight,
-                Tile.InsideWallHorizontal, Tile.InsideWallHorizontal, Tile.InsideWallHorizontal,
-                Tile.InsideCornerDownLeft,
-                Tile.StandardPellet, Tile.InsideWallVertical
-            },
-            {
-                Tile.OutsideWallVertical, Tile.PowerPellet, Tile.InsideWallVertical, Tile.Empty, Tile.Empty,
-                Tile.InsideWallVertical, Tile.StandardPellet, Tile.InsideWallVertical, Tile.Empty, Tile.Empty,
-                Tile.Empty, Tile.InsideWallVertical,
-                Tile.StandardPellet, Tile.InsideWallVertical
-            },
-            {
-                Tile.OutsideWallVertical, Tile.StandardPellet, Tile.InsideCornerTopRight, Tile.InsideWallHorizontal,
-                Tile.InsideWallHorizontal, Tile.InsideCornerTopLeft, Tile.StandardPellet, Tile.InsideCornerTopRight,
-                Tile.InsideWallHorizontal, Tile.InsideWallHorizontal, Tile.InsideWallHorizontal,
-                Tile.InsideCornerTopLeft,
-                Tile.StandardPellet, Tile.InsideCornerTopRight
-            },
-            {
-                Tile.OutsideWallVertical, Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet,
-                Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet,
-                Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet
-            },
-            {
-                Tile.OutsideWallVertical, Tile.StandardPellet, Tile.InsideCornerDownRight, Tile.InsideWallHorizontal,
-                Tile.InsideWallHorizontal, Tile.InsideCornerDownLeft, Tile.StandardPellet, Tile.InsideCornerDownRight,
-                Tile.InsideCornerDownLeft,
-                Tile.StandardPellet, Tile.InsideCornerDownRight, Tile.InsideWallHorizontal, Tile.InsideWallHorizontal,
-                Tile.InsideWallHorizontal
-            },
-            {
-                Tile.OutsideWallVertical, Tile.StandardPellet, Tile.InsideCornerTopRight, Tile.InsideWallHorizontal,
-                Tile.InsideWallHorizontal, Tile.InsideCornerTopLeft, Tile.StandardPellet, Tile.InsideWallVertical,
-                Tile.InsideWallVertical,
-                Tile.StandardPellet, Tile.InsideCornerTopRight, Tile.InsideWallHorizontal, Tile.InsideWallHorizontal,
-                Tile.InsideCornerDownLeft
-            },
-            {
-                Tile.OutsideWallVertical, Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet,
-                Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet, Tile.InsideWallVertical,
-                Tile.InsideWallVertical, Tile.StandardPellet,
-                Tile.StandardPellet, Tile.StandardPellet, Tile.StandardPellet, Tile.InsideWallVertical
-            },
-            {
-                Tile.OutsideCornerTopRight, Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal,
-                Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal, Tile.OutsideCornerDownLeft, Tile.StandardPellet,
-                Tile.InsideWallVertical, Tile.InsideCornerTopRight, Tile.InsideWallHorizontal,
-                Tile.InsideWallHorizontal,
-                Tile.InsideCornerDownLeft, Tile.Empty, Tile.InsideWallVertical
-            },
-            {
-                Tile.Empty, Tile.Empty, Tile.Empty, Tile.Empty, Tile.Empty, Tile.OutsideWallVertical,
-                Tile.StandardPellet, Tile.InsideWallVertical, Tile.InsideCornerDownRight, Tile.InsideWallHorizontal,
-                Tile.InsideWallHorizontal, Tile.InsideCornerTopLeft, Tile.Empty, Tile.InsideCornerTopRight
-            },
-            {
-                Tile.Empty, Tile.Empty, Tile.Empty, Tile.Empty, Tile.Empty, Tile.OutsideWallVertical,
-                Tile.StandardPellet, Tile.InsideWallVertical, Tile.InsideWallVertical, Tile.Empty, Tile.Empty,
-                Tile.Empty, Tile.Empty, Tile.Empty
-            },
-            {
-                Tile.Empty, Tile.Empty, Tile.Empty, Tile.Empty, Tile.Empty, Tile.OutsideWallVertical,
-                Tile.StandardPellet, Tile.InsideWallVertical, Tile.InsideWallVertical, Tile.Empty,
-                Tile.InsideCornerDownRight, Tile.InsideWallHorizontal, Tile.InsideWallHorizontal, Tile.Empty
-            },
-            {
-                Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal,
-                Tile.OutsideWallHorizontal, Tile.OutsideWallHorizontal, Tile.OutsideCornerTopLeft, Tile.StandardPellet,
-                Tile.InsideCornerTopRight, Tile.InsideCornerTopLeft, Tile.Empty, Tile.InsideWallVertical, Tile.Empty,
-                Tile.Empty, Tile.Empty
-            },
-            {
-                Tile.Empty, Tile.Empty, Tile.Empty, Tile.Empty, Tile.Empty, Tile.Empty, Tile.StandardPellet, Tile.Empty,
-                Tile.Empty, Tile.Empty, Tile.InsideWallVertical, Tile.Empty, Tile.Empty, Tile.Empty
-            },
+            { 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7 },
+            { 2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4 },
+            { 2, 5, 3, 4, 4, 3, 5, 3, 4, 4, 4, 3, 5, 4 },
+            { 2, 6, 4, 0, 0, 4, 5, 4, 0, 0, 0, 4, 5, 4 },
+            { 2, 5, 3, 4, 4, 3, 5, 3, 4, 4, 4, 3, 5, 3 },
+            { 2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 },
+            { 2, 5, 3, 4, 4, 3, 5, 3, 3, 5, 3, 4, 4, 4 },
+            { 2, 5, 3, 4, 4, 3, 5, 4, 4, 5, 3, 4, 4, 3 },
+            { 2, 5, 5, 5, 5, 5, 5, 4, 4, 5, 5, 5, 5, 4 },
+            { 1, 2, 2, 2, 2, 1, 5, 4, 3, 4, 4, 3, 0, 4 },
+            { 0, 0, 0, 0, 0, 2, 5, 4, 3, 4, 4, 3, 0, 3 },
+            { 0, 0, 0, 0, 0, 2, 5, 4, 4, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 2, 5, 4, 4, 0, 3, 4, 4, 0 },
+            { 2, 2, 2, 2, 2, 1, 5, 3, 3, 0, 4, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 4, 0, 0, 0 },
         };
+
+        var tiles = new Tile[levelMap.GetLength(0), levelMap.GetLength(1)];
+
+        for (var i = 0; i < levelMap.GetLength(0); i++)
+        {
+            for (var j = 0; j < levelMap.GetLength(1); j++)
+            {
+                var rawTile = (RawTile)levelMap[i, j];
+                var neighborLeft = j > 0 ? tiles[i, j - 1] : Tile.Empty;
+                var neighborTop = i > 0 ? tiles[i - 1, j] : Tile.Empty;
+                var neighborTopIsOutsideWall =
+                    neighborTop is Tile.OutsideWallVertical or Tile.OutsideCornerDownRight
+                        or Tile.OutsideCornerDownLeft or Tile.JunctionRight or Tile.JunctionLeft;
+                var neighborLeftIsOutsideWall =
+                    neighborLeft is Tile.OutsideWallHorizontal or Tile.OutsideCornerTopRight
+                        or Tile.OutsideCornerDownRight or Tile.JunctionTop or Tile.JunctionDown;
+                var neighborTopIsInsideWall =
+                    neighborTop is Tile.InsideWallVertical or Tile.InsideCornerDownRight or Tile.InsideCornerDownLeft
+                        or Tile.JunctionDown;
+                var neighborLeftIsInsideWall =
+                    neighborLeft is Tile.InsideWallHorizontal or Tile.InsideCornerTopRight
+                        or Tile.InsideCornerDownRight or Tile.JunctionRight;
+
+                switch (rawTile)
+                {
+                    case RawTile.Empty:
+                        tiles[i, j] = Tile.Empty;
+                        break;
+                    case RawTile.OutsideCorner:
+                    {
+                        if (neighborTopIsOutsideWall && neighborLeftIsOutsideWall)
+                        {
+                            tiles[i, j] = Tile.OutsideCornerTopLeft;
+                        }
+
+                        if (neighborTopIsOutsideWall && !neighborLeftIsOutsideWall)
+                        {
+                            tiles[i, j] = Tile.OutsideCornerTopRight;
+                        }
+
+                        if (!neighborTopIsOutsideWall && neighborLeftIsOutsideWall)
+                        {
+                            tiles[i, j] = Tile.OutsideCornerDownLeft;
+                        }
+
+                        if (!neighborTopIsOutsideWall && !neighborLeftIsOutsideWall)
+                        {
+                            tiles[i, j] = Tile.OutsideCornerDownRight;
+                        }
+
+                        break;
+                    }
+                    case RawTile.OutsideWall:
+                    {
+                        if (!neighborTopIsOutsideWall && (neighborLeftIsOutsideWall || j == 0))
+                        {
+                            tiles[i, j] = Tile.OutsideWallHorizontal;
+                        }
+
+                        if ((neighborTopIsOutsideWall || i == 0) && !neighborLeftIsOutsideWall)
+                        {
+                            tiles[i, j] = Tile.OutsideWallVertical;
+                        }
+
+                        break;
+                    }
+                    case RawTile.InsideCorner:
+                    {
+                        if (neighborTopIsInsideWall && neighborLeftIsInsideWall)
+                        {
+                            tiles[i, j] = Tile.InsideCornerTopLeft;
+                        }
+
+                        if (neighborTopIsInsideWall && !neighborLeftIsInsideWall)
+                        {
+                            tiles[i, j] = Tile.InsideCornerTopRight;
+                        }
+
+                        if (!neighborTopIsInsideWall && neighborLeftIsInsideWall)
+                        {
+                            tiles[i, j] = Tile.InsideCornerDownLeft;
+                        }
+
+                        if (!neighborTopIsInsideWall && !neighborLeftIsInsideWall)
+                        {
+                            tiles[i, j] = Tile.InsideCornerDownRight;
+                        }
+
+                        break;
+                    }
+                    case RawTile.InsideWall:
+                    {
+                        if (!neighborTopIsInsideWall && (neighborLeftIsInsideWall || j == 0))
+                        {
+                            tiles[i, j] = Tile.InsideWallHorizontal;
+                        }
+
+                        if ((neighborTopIsInsideWall || i == 0) && !neighborLeftIsInsideWall)
+                        {
+                            tiles[i, j] = Tile.InsideWallVertical;
+                        }
+
+                        break;
+                    }
+                    case RawTile.StandardPellet:
+                        tiles[i, j] = Tile.StandardPellet;
+                        break;
+                    case RawTile.PowerPellet:
+                        tiles[i, j] = Tile.PowerPellet;
+                        break;
+                    case RawTile.Junction:
+                    {
+                        if (!neighborTopIsInsideWall && !neighborTopIsOutsideWall && neighborLeftIsOutsideWall)
+                        {
+                            tiles[i, j] = Tile.JunctionDown;
+                        }
+
+                        if (neighborTopIsInsideWall && neighborLeftIsOutsideWall)
+                        {
+                            tiles[i, j] = Tile.JunctionTop;
+                        }
+
+                        if (neighborTopIsOutsideWall && neighborLeftIsInsideWall)
+                        {
+                            tiles[i, j] = Tile.JunctionLeft;
+                        }
+
+                        if (neighborTopIsOutsideWall && !neighborLeftIsInsideWall && !neighborLeftIsOutsideWall)
+                        {
+                            tiles[i, j] = Tile.JunctionRight;
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
 
         var n = tiles.GetLength(0) * 2 - 1;
         var m = tiles.GetLength(1) * 2;
