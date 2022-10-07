@@ -15,6 +15,8 @@ public class LevelManager : MonoBehaviour
     private Vector3 _posBottomLeft;
     private Vector3 _posBottomRight;
 
+    public GameObject[] spiders;
+
     private enum RawTile
     {
         Empty = 0,
@@ -304,6 +306,10 @@ public class LevelManager : MonoBehaviour
         _posTopRight = new Vector3(_tileSize * 6, -_tileSize, 0);
         _posBottomLeft = new Vector3(_tileSize, -_tileSize * 5, 0);
         _posBottomRight = new Vector3(_tileSize * 6, -_tileSize * 5, 0);
+        spiders[0].transform.position = new Vector3(_tileSize * 13, -_tileSize * 13, 0);
+        spiders[1].transform.position = new Vector3(_tileSize * 14, -_tileSize * 13, 0);
+        spiders[2].transform.position = new Vector3(_tileSize * 13, -_tileSize * 14, 0);
+        spiders[3].transform.position = new Vector3(_tileSize * 14, -_tileSize * 14, 0);
     }
 
     // Update is called once per frame

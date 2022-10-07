@@ -1562,6 +1562,11 @@ MonoBehaviour:
   - {fileID: 1617633532}
   - {fileID: 1156412281}
   player: {fileID: 1283208289}
+  spiders:
+  - {fileID: 424918571}
+  - {fileID: 1898748769}
+  - {fileID: 1670075729}
+  - {fileID: 970960266}
 --- !u!4 &1415343006
 Transform:
   m_ObjectHideFlags: 0
