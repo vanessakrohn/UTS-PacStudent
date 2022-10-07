@@ -306,6 +306,7 @@ public class LevelManager : MonoBehaviour
         _posTopRight = new Vector3(_tileSize * 6, -_tileSize, 0);
         _posBottomLeft = new Vector3(_tileSize, -_tileSize * 5, 0);
         _posBottomRight = new Vector3(_tileSize * 6, -_tileSize * 5, 0);
+        player.transform.position = _posTopLeft;
         spiders[0].transform.position = new Vector3(_tileSize * 13, -_tileSize * 13, 0);
         spiders[1].transform.position = new Vector3(_tileSize * 14, -_tileSize * 13, 0);
         spiders[2].transform.position = new Vector3(_tileSize * 13, -_tileSize * 14, 0);
@@ -315,31 +316,7 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_tweener.TweenExists(player.transform)) return;
-
-        ResetTriggers();
-
-        switch (_nextTween)
-        {
-            case 0:
-                _tweener.AddTween(player.transform, _posTopLeft, _posTopRight, 2.5f);
-                _playerAnimator.SetTrigger("right");
-                break;
-            case 1:
-                _tweener.AddTween(player.transform, _posTopRight, _posBottomRight, 2.0f);
-                _playerAnimator.SetTrigger("down");
-                break;
-            case 2:
-                _tweener.AddTween(player.transform, _posBottomRight, _posBottomLeft, 2.5f);
-                _playerAnimator.SetTrigger("left");
-                break;
-            case 3:
-                _tweener.AddTween(player.transform, _posBottomLeft, _posTopLeft, 2.0f);
-                _playerAnimator.SetTrigger("up");
-                break;
-        }
-
-        _nextTween = (_nextTween + 1) % 4;
+        
     }
 
     private void ResetTriggers()
