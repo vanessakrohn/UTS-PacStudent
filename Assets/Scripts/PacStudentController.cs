@@ -76,7 +76,12 @@ public class PacStudentController : MonoBehaviour
                         break;
                 }
             }
+            else
+            {
+                _animator.speed = 0.0f;
+            }
         }
+   
     }
     private bool IsWalkable(UserInput input)
     {
@@ -106,34 +111,35 @@ public class PacStudentController : MonoBehaviour
 
     private void MoveRight()
     {
-        ResetTriggers();
+        StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position + new Vector3(LevelManager.TileSize, 0, 0), Speed);
         _animator.SetTrigger("right");
     }
 
     private void MoveLeft()
     {
-        ResetTriggers();
+        StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position - new Vector3(LevelManager.TileSize, 0, 0), Speed);
         _animator.SetTrigger("left");
     }
 
     private void MoveDown()
     {
-        ResetTriggers();
+        StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position - new Vector3(0, LevelManager.TileSize, 0), Speed);
         _animator.SetTrigger("down");
     }
 
     private void MoveUp()
     {
-        ResetTriggers();
+        StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position + new Vector3(0, LevelManager.TileSize, 0), Speed);
         _animator.SetTrigger("up");
     }
 
-    private void ResetTriggers()
+    private void StartMovement()
     {
+        _animator.speed = 1.0f;
         _animator.ResetTrigger("right");
         _animator.ResetTrigger("left");
         _animator.ResetTrigger("up");
