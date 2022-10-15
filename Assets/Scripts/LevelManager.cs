@@ -4,6 +4,8 @@ public class LevelManager : MonoBehaviour
 {
     public GameObject[] rawTiles;
     public GameObject[] spiders;
+    public static float TileSize = 128/100f;
+    public Tile[,] grid;
 
     private enum RawTile
     {
@@ -17,7 +19,7 @@ public class LevelManager : MonoBehaviour
         Junction = 7
     }
 
-    private enum Tile
+    public enum Tile
     {
         Empty,
         OutsideCornerTopRight,
@@ -201,29 +203,29 @@ public class LevelManager : MonoBehaviour
 
         var n = tiles.GetLength(0) * 2 - 1;
         var m = tiles.GetLength(1) * 2;
-        var copiedTiles = new Tile[n, m];
+        grid = new Tile[n, m];
         for (var i = 0; i < tiles.GetLength(0); i++)
         {
             for (var j = 0; j < tiles.GetLength(1); j++)
             {
-                copiedTiles[i, j] = tiles[i, j];
-                copiedTiles[(n - 1) - i, j] = MirrorY(tiles[i, j]);
-                copiedTiles[i, (m - 1) - j] = MirrorX(tiles[i, j]);
-                copiedTiles[(n - 1) - i, (m - 1) - j] = MirrorX(MirrorY(tiles[i, j]));
+                grid[i, j] = tiles[i, j];
+                grid[(n - 1) - i, j] = MirrorY(tiles[i, j]);
+                grid[i, (m - 1) - j] = MirrorX(tiles[i, j]);
+                grid[(n - 1) - i, (m - 1) - j] = MirrorX(MirrorY(tiles[i, j]));
             }
         }
         
 
-        for (var i = 0; i < copiedTiles.GetLength(0); i++)
+        for (var i = 0; i < grid.GetLength(0); i++)
         {
-            for (var j = 0; j < copiedTiles.GetLength(1); j++)
+            for (var j = 0; j < grid.GetLength(1); j++)
             {
-                var tile = copiedTiles[i, j];
+                var tile = grid[i, j];
                 var rawTileGameObject = GetGameObject(tile);
 
                 if (rawTileGameObject == null) continue;
                 var tileGameObject =
-                    Instantiate(rawTileGameObject, new Vector3(j * Grid.TileSize, -i * Grid.TileSize, 0), Quaternion.identity);
+                    Instantiate(rawTileGameObject, new Vector3(j * TileSize, -i * TileSize, 0), Quaternion.identity);
 
                 if (tile == Tile.OutsideCornerDownLeft)
                 {
@@ -287,10 +289,10 @@ public class LevelManager : MonoBehaviour
             rawTile.SetActive(false);
         }
 
-        spiders[0].transform.position = new Vector3(Grid.TileSize * 13, -Grid.TileSize * 13, 0);
-        spiders[1].transform.position = new Vector3(Grid.TileSize * 14, -Grid.TileSize * 13, 0);
-        spiders[2].transform.position = new Vector3(Grid.TileSize * 13, -Grid.TileSize * 14, 0);
-        spiders[3].transform.position = new Vector3(Grid.TileSize * 14, -Grid.TileSize * 14, 0);
+        spiders[0].transform.position = new Vector3(TileSize * 13, -TileSize * 13, 0);
+        spiders[1].transform.position = new Vector3(TileSize * 14, -TileSize * 13, 0);
+        spiders[2].transform.position = new Vector3(TileSize * 13, -TileSize * 14, 0);
+        spiders[3].transform.position = new Vector3(TileSize * 14, -TileSize * 14, 0);
     }
 
     GameObject GetGameObject(Tile tile)
