@@ -3,18 +3,6 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public GameObject[] rawTiles;
-    public GameObject player;
-
-    private float _tileSize;
-
-    private Tweener _tweener;
-    private Animator _playerAnimator;
-    private int _nextTween;
-    private Vector3 _posTopLeft;
-    private Vector3 _posTopRight;
-    private Vector3 _posBottomLeft;
-    private Vector3 _posBottomRight;
-
     public GameObject[] spiders;
 
     private enum RawTile
@@ -224,8 +212,7 @@ public class LevelManager : MonoBehaviour
                 copiedTiles[(n - 1) - i, (m - 1) - j] = MirrorX(MirrorY(tiles[i, j]));
             }
         }
-
-        _tileSize = rawTiles[0].GetComponent<SpriteRenderer>().bounds.size.x;
+        
 
         for (var i = 0; i < copiedTiles.GetLength(0); i++)
         {
@@ -236,7 +223,7 @@ public class LevelManager : MonoBehaviour
 
                 if (rawTileGameObject == null) continue;
                 var tileGameObject =
-                    Instantiate(rawTileGameObject, new Vector3(j * _tileSize, -i * _tileSize, 0), Quaternion.identity);
+                    Instantiate(rawTileGameObject, new Vector3(j * Grid.TileSize, -i * Grid.TileSize, 0), Quaternion.identity);
 
                 if (tile == Tile.OutsideCornerDownLeft)
                 {
@@ -300,31 +287,10 @@ public class LevelManager : MonoBehaviour
             rawTile.SetActive(false);
         }
 
-        _tweener = gameObject.GetComponent<Tweener>();
-        _playerAnimator = player.GetComponent<Animator>();
-        _posTopLeft = new Vector3(_tileSize, -_tileSize, 0);
-        _posTopRight = new Vector3(_tileSize * 6, -_tileSize, 0);
-        _posBottomLeft = new Vector3(_tileSize, -_tileSize * 5, 0);
-        _posBottomRight = new Vector3(_tileSize * 6, -_tileSize * 5, 0);
-        player.transform.position = _posTopLeft;
-        spiders[0].transform.position = new Vector3(_tileSize * 13, -_tileSize * 13, 0);
-        spiders[1].transform.position = new Vector3(_tileSize * 14, -_tileSize * 13, 0);
-        spiders[2].transform.position = new Vector3(_tileSize * 13, -_tileSize * 14, 0);
-        spiders[3].transform.position = new Vector3(_tileSize * 14, -_tileSize * 14, 0);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void ResetTriggers()
-    {
-        _playerAnimator.ResetTrigger("right");
-        _playerAnimator.ResetTrigger("left");
-        _playerAnimator.ResetTrigger("up");
-        _playerAnimator.ResetTrigger("down");
+        spiders[0].transform.position = new Vector3(Grid.TileSize * 13, -Grid.TileSize * 13, 0);
+        spiders[1].transform.position = new Vector3(Grid.TileSize * 14, -Grid.TileSize * 13, 0);
+        spiders[2].transform.position = new Vector3(Grid.TileSize * 13, -Grid.TileSize * 14, 0);
+        spiders[3].transform.position = new Vector3(Grid.TileSize * 14, -Grid.TileSize * 14, 0);
     }
 
     GameObject GetGameObject(Tile tile)
