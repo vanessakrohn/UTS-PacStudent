@@ -9,6 +9,7 @@ public class PacStudentController : MonoBehaviour
     public LevelManager levelManager;
     public AudioClip movingClip;
     public AudioClip eatingClip;
+    public ParticleSystem dust;
 
     private enum UserInput
     {
@@ -84,6 +85,7 @@ public class PacStudentController : MonoBehaviour
             {
                 _animator.speed = 0.0f;
                 _audioSource.Stop();
+                dust.Stop();
             }
         }
    
@@ -157,6 +159,7 @@ public class PacStudentController : MonoBehaviour
         else _audioSource.clip = movingClip;
         
         _audioSource.Play();
+        dust.Play();
         _animator.ResetTrigger("right");
         _animator.ResetTrigger("left");
         _animator.ResetTrigger("up");
