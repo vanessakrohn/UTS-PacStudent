@@ -1939,10 +1939,10 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 90f8aa2a85af44503a0dad7ee4703d31, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -2037,6 +2037,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelManager: {fileID: 1415343005}
+  movingClip: {fileID: 8300000, guid: 90f8aa2a85af44503a0dad7ee4703d31, type: 3}
+  eatingClip: {fileID: 8300000, guid: 73155b6b0fc8f480ca2648481fd76127, type: 3}
 --- !u!114 &1283208296
 MonoBehaviour:
   m_ObjectHideFlags: 0
