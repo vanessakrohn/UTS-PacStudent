@@ -9,26 +9,27 @@ public class StandardPelletController : MonoBehaviour
 {
     public LevelManager levelManager;
     public ScoreController scoreController;
-        
+
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        Destroy(gameObject);
-        var indices = levelManager.getIndices(transform.position);
-        int i = indices.i;
-        int j = indices.j;
-        levelManager.grid[i, j] = LevelManager.Tile.Empty;
-        scoreController.score += 10;
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Destroy(gameObject);
+            var indices = levelManager.getIndices(transform.position);
+            int i = indices.i;
+            int j = indices.j;
+            levelManager.grid[i, j] = LevelManager.Tile.Empty;
+            scoreController.score += 10;
+        }
     }
 }

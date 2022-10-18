@@ -6,12 +6,16 @@ public class CherryController : MonoBehaviour
 {
     private Tweener _tweener;
     private Camera _camera;
+    private Renderer _renderer;
+    public LevelManager levelManager;
+    public ScoreController scoreController;
+    private bool _maySpawn = false; 
 
-    
     // Start is called before the first frame update
     void Start()
     {
         _camera = Camera.main;
+        _renderer = gameObject.GetComponent<Renderer>();
         _tweener = gameObject.GetComponent<Tweener>();
         StartCoroutine(SpawnVegemiteCoroutine());
     }
@@ -19,7 +23,19 @@ public class CherryController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+        if (!_tweener.TweenExists(transform) && _maySpawn)
+        {
+            SpawnVegemite();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            _renderer.enabled = false;
+            scoreController.score += 100;
+        }
     }
 
     private void SpawnVegemite()
@@ -29,11 +45,10 @@ public class CherryController : MonoBehaviour
         int randSide = Random.Range(0, 3);
         Vector3 randPos = Vector3.zero;
         Vector3 mirroredPoint = Vector3.zero;
-       
-
+        _renderer.enabled = true;
         switch (randSide)
         {
-            case 0: 
+            case 0:
                 randPos = _camera.ViewportToWorldPoint(new Vector3(0, randY, _camera.nearClipPlane));
                 randPos.x -= 64.0f / 100.0f;
                 mirroredPoint = _camera.ViewportToWorldPoint(new Vector3(1, 1-randY, _camera.nearClipPlane));
@@ -61,11 +76,10 @@ public class CherryController : MonoBehaviour
 
         _tweener.AddTween(transform, randPos, mirroredPoint, 10.0f);
     }
-    
+
     IEnumerator SpawnVegemiteCoroutine()
     {
         yield return new WaitForSeconds(10);
-        SpawnVegemite();
-        yield return SpawnVegemiteCoroutine();
+        _maySpawn = true;
     }
 }
