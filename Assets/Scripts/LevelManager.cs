@@ -437,4 +437,11 @@ public class LevelManager : MonoBehaviour
 
         return tile;
     }
+
+    public (int i,int j) getIndices(Vector3 position)
+    {
+        int j = Mathf.RoundToInt(position.x / TileSize);
+        int i = Mathf.RoundToInt(-position.y /  TileSize);
+        return (i,j);
+    }
 }

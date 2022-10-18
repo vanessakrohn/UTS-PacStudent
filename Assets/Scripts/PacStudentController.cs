@@ -140,8 +140,9 @@ public class PacStudentController : MonoBehaviour
 
     private LevelManager.Tile GetNeighbor(UserInput input)
     {
-        int j = Mathf.RoundToInt(transform.position.x / LevelManager.TileSize);
-        int i = Mathf.RoundToInt(-transform.position.y / LevelManager.TileSize);
+        var indices = levelManager.getIndices(transform.position);
+        int i = indices.i;
+        int j = indices.j;
         LevelManager.Tile tileNeighbour = LevelManager.Tile.Empty;
 
         // TODO: handle teleport
