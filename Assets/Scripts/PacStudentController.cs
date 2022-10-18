@@ -6,7 +6,7 @@ public class PacStudentController : MonoBehaviour
     private Tweener _tweener;
     private Animator _animator;
     private AudioSource _audioSource;
-    private static float Speed = 0.5f;
+    private static float Speed = 0.4f;
     public LevelManager levelManager;
     public AudioClip movingClip;
     public AudioClip eatingClip;
@@ -62,35 +62,41 @@ public class PacStudentController : MonoBehaviour
 
         if (!_tweener.TweenExists(transform))
         {
-            if (IsWalkable(lastInput))
+            if (ShouldTeleport())
             {
-                currentInput = lastInput;
-            }
-
-            if (IsWalkable(currentInput))
-            {
-                switch (currentInput)
-                {
-                    case UserInput.Up:
-                        MoveUp();
-                        break;
-                    case UserInput.Left:
-                        MoveLeft();
-                        break;
-                    case UserInput.Down:
-                        MoveDown();
-                        break;
-                    case UserInput.Right:
-                        MoveRight();
-                        break;
-                }
+                Teleport();
             }
             else
             {
-                _animator.speed = 0.0f;
-                dust.Stop();
-                StartCoroutine(Bump());
-                
+                if (IsWalkable(lastInput))
+                {
+                    currentInput = lastInput;
+                }
+
+                if (IsWalkable(currentInput))
+                {
+                    switch (currentInput)
+                    {
+                        case UserInput.Up:
+                            MoveUp();
+                            break;
+                        case UserInput.Left:
+                            MoveLeft();
+                            break;
+                        case UserInput.Down:
+                            MoveDown();
+                            break;
+                        case UserInput.Right:
+                            MoveRight();
+                            break;
+                    }
+                }
+                else
+                {
+                    _animator.speed = 0.0f;
+                    dust.Stop();
+                    StartCoroutine(Bump());
+                }
             }
         }
     }
@@ -99,6 +105,37 @@ public class PacStudentController : MonoBehaviour
     {
         return GetNeighbor(input) is LevelManager.Tile.Empty or LevelManager.Tile.StandardPellet
             or LevelManager.Tile.PowerPellet;
+    }
+
+    private bool ShouldTeleport()
+    {
+        int j = Mathf.RoundToInt(transform.position.x / LevelManager.TileSize);
+        int i = Mathf.RoundToInt(-transform.position.y / LevelManager.TileSize);
+
+        switch (lastInput)
+        {
+            case UserInput.Up:
+                i--;
+                break;
+            case UserInput.Left:
+                j--;
+                break;
+            case UserInput.Down:
+                i++;
+                break;
+            case UserInput.Right:
+                j++;
+                break;
+        }
+
+        return levelManager.grid.GetLength(0) <= i || levelManager.grid.GetLength(1) <= j || i < 0 || j < 0;
+    }
+
+    private void Teleport()
+    {
+        transform.position =
+            new Vector3(LevelManager.TileSize * (levelManager.grid.GetLength(1) - 1) - transform.position.x,
+                transform.position.y);
     }
 
     private LevelManager.Tile GetNeighbor(UserInput input)
@@ -166,8 +203,11 @@ public class PacStudentController : MonoBehaviour
         {
             _audioSource.clip = eatingClip;
         }
-        else _audioSource.clip = movingClip;
-        
+        else
+        {
+            _audioSource.clip = movingClip;
+        }
+
         _audioSource.Play();
         dust.Play();
         _mayBump = true;
