@@ -4,6 +4,8 @@ public class BackgroundMusicManager : MonoBehaviour
 {
     private AudioSource _intro;
     private AudioSource _backgroundNormal;
+    public AudioClip spidersScared;
+    public AudioClip spidersNormal;
 
     // Start is called before the first frame update
     void Start()
@@ -20,5 +22,15 @@ public class BackgroundMusicManager : MonoBehaviour
         {
             _backgroundNormal.Play();
         }
+    }
+
+    public void SpidersScared()
+    {
+        _backgroundNormal.clip = spidersScared;
+    }
+    
+    public void SpidersNormal()
+    {
+        _backgroundNormal.clip = spidersNormal;
     }
 }
