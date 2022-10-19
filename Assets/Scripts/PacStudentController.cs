@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PacStudentController : MonoBehaviour
 {
+    private Vector3 _spawnPosition;
     private Tweener _tweener;
     private Animator _animator;
     private AudioSource _audioSource;
@@ -11,16 +12,21 @@ public class PacStudentController : MonoBehaviour
     public AudioClip movingClip;
     public AudioClip eatingClip;
     public AudioClip bumpingClip;
+    public AudioClip deadClip;
     public ParticleSystem dust;
     public ParticleSystem wallBump;
     private bool _mayBump = false;
+    public GameObject[] lifeIndicators;
+    private int _remainingLifes = 3;
+    private bool _paused = false;
 
     private enum UserInput
     {
         Up,
         Left,
         Down,
-        Right
+        Right,
+        None
     }
 
     // ReSharper disable once InconsistentNaming
@@ -35,11 +41,22 @@ public class PacStudentController : MonoBehaviour
         _tweener = gameObject.GetComponent<Tweener>();
         _animator = gameObject.GetComponent<Animator>();
         _audioSource = gameObject.GetComponent<AudioSource>();
-        transform.position = new Vector3(LevelManager.TileSize, -LevelManager.TileSize, 0);
+        _spawnPosition = new Vector3(LevelManager.TileSize, -LevelManager.TileSize, 0);
+        transform.position = _spawnPosition;
+        dust.Stop();
     }
 
     void Update()
     {
+        if (_paused)
+        {
+            lastInput = UserInput.None;
+            currentInput = UserInput.None;
+            dust.Stop();
+            return;
+        }
+
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             lastInput = UserInput.Up;
@@ -239,6 +256,32 @@ public class PacStudentController : MonoBehaviour
             _audioSource.Play();
             yield return new WaitForSeconds(0.3f);
             wallBump.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Spider"))
+        {
+            StartCoroutine(DeadCoroutine());
+        }
+    }
+
+    private IEnumerator DeadCoroutine()
+    {
+        _animator.SetBool("dead", true);
+        _paused = true;
+        _audioSource.clip = deadClip;
+        _audioSource.Play();
+        yield return new WaitForSeconds(2.5f);
+        _animator.SetBool("dead", false);
+        _paused = false;
+        _animator.SetTrigger("right");
+        _remainingLifes--;
+        if (_remainingLifes >= 0)
+        {
+            Destroy(lifeIndicators[_remainingLifes]);
+            transform.position = _spawnPosition;
         }
     }
 }
