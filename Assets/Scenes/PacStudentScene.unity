@@ -177,6 +177,8 @@ MonoBehaviour:
   - {fileID: 1670075729}
   - {fileID: 970960266}
   backgroundMusicManager: {fileID: 1136233587}
+  timer: {fileID: 1329387712}
+  time: 0
 --- !u!1 &49915876
 GameObject:
   m_ObjectHideFlags: 0
