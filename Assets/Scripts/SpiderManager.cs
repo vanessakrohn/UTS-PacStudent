@@ -11,6 +11,7 @@ public class SpiderManager : MonoBehaviour
     public GameObject timer;
     private Text timerText;
     public float time;
+    public bool areScared = false;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +40,7 @@ public class SpiderManager : MonoBehaviour
     private IEnumerator SpiderStatesCoroutine()
     {
         time = Time.time;
+        areScared = true;
         
         for (int i = 0; i < spiders.Length; i++)
         {
@@ -58,5 +60,7 @@ public class SpiderManager : MonoBehaviour
         }
         backgroundMusicManager.SpidersNormal();
         timer.SetActive(false);
+        areScared = false;
     }
+    
 }

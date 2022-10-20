@@ -20,6 +20,7 @@ public class PacStudentController : MonoBehaviour
     public GameObject[] lifeIndicators;
     private int _remainingLifes = 3;
     private bool _paused = false;
+    public SpiderManager spiderManager;
 
     private enum UserInput
     {
@@ -31,10 +32,10 @@ public class PacStudentController : MonoBehaviour
     }
 
     // ReSharper disable once InconsistentNaming
-    private UserInput lastInput = UserInput.Right;
+    private UserInput lastInput = UserInput.None;
 
     // ReSharper disable once InconsistentNaming
-    private UserInput currentInput = UserInput.Right;
+    private UserInput currentInput = UserInput.None;
 
     // Start is called before the first frame update
     void Start()
@@ -163,8 +164,7 @@ public class PacStudentController : MonoBehaviour
         int i = indices.i;
         int j = indices.j;
         LevelManager.Tile tileNeighbour = LevelManager.Tile.Empty;
-
-        // TODO: handle teleport
+        
         switch (input)
         {
             case UserInput.Up:
@@ -265,7 +265,10 @@ public class PacStudentController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Spider"))
         {
-            StartCoroutine(DeadCoroutine());
+            if (!spiderManager.areScared)
+            {
+                StartCoroutine(DeadCoroutine());
+            }
         }
     }
 
