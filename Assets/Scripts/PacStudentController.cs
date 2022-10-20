@@ -164,7 +164,7 @@ public class PacStudentController : MonoBehaviour
         int i = indices.i;
         int j = indices.j;
         LevelManager.Tile tileNeighbour = LevelManager.Tile.Empty;
-        
+
         switch (input)
         {
             case UserInput.Up:
@@ -274,21 +274,32 @@ public class PacStudentController : MonoBehaviour
 
     private IEnumerator DeadCoroutine()
     {
-        _animator.SetBool("dead", true);
-        gameManager.isPaused = true;
-        _audioSource.clip = deadClip;
-        _audioSource.Play();
-        deathMark.Play();
-        yield return new WaitForSeconds(2.5f);
-        deathMark.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        _animator.SetBool("dead", false);
-        gameManager.isPaused = false;
-        _animator.SetTrigger("right");
-        _remainingLifes--;
-        if (_remainingLifes >= 0)
+        if (!gameManager.isPaused)
         {
-            Destroy(lifeIndicators[_remainingLifes]);
-            transform.position = _spawnPosition;
+            _animator.SetBool("dead", true);
+            gameManager.isPaused = true;
+            _audioSource.clip = deadClip;
+            _audioSource.Play();
+            deathMark.Play();
+            _remainingLifes--;
+            if (_remainingLifes >= 0)
+            {
+                Destroy(lifeIndicators[_remainingLifes]);
+                if (_remainingLifes == 0)
+                {
+                    gameManager.GameOver();
+                }
+            }
+            yield return new WaitForSeconds(2.5f);
+            
+            if (_remainingLifes > 0)
+            {
+                transform.position = _spawnPosition;
+            }
+            deathMark.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            _animator.SetBool("dead", false);
+            gameManager.isPaused = false;
+            _animator.SetTrigger("right");
         }
     }
 }

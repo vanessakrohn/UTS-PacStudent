@@ -455,6 +455,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelManager: {fileID: 1415343005}
   scoreController: {fileID: 49915880}
+  gameManager: {fileID: 879820676}
 --- !u!58 &300983045
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -6226,7 +6227,9 @@ MonoBehaviour:
   isPaused: 1
   backgroundMusicManager: {fileID: 1136233587}
   timer: {fileID: 446085445}
-  time: 0
+  startTime: 0
+  totalTime: 0
+  score: {fileID: 49915880}
 --- !u!4 &879820677
 Transform:
   m_ObjectHideFlags: 0

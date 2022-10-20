@@ -9,6 +9,7 @@ public class StandardPelletController : MonoBehaviour
 {
     public LevelManager levelManager;
     public ScoreController scoreController;
+    public GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +31,26 @@ public class StandardPelletController : MonoBehaviour
             int j = indices.j;
             levelManager.grid[i, j] = LevelManager.Tile.Empty;
             scoreController.score += 10;
+            
+            if (AllPelletsEaten())
+            {
+                gameManager.GameOver();
+            }
         }
+    }
+
+    private bool AllPelletsEaten()
+    {
+        for (var i = 0; i < levelManager.grid.GetLength(0); i++)
+        {
+            for (var j = 0; j < levelManager.grid.GetLength(1); j++)
+            {
+                if (levelManager.grid[i, j] == LevelManager.Tile.StandardPellet)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
