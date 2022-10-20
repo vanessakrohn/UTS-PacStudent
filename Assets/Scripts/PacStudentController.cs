@@ -15,6 +15,7 @@ public class PacStudentController : MonoBehaviour
     public AudioClip deadClip;
     public ParticleSystem dust;
     public ParticleSystem wallBump;
+    public ParticleSystem deathMark;
     private bool _mayBump = false;
     public GameObject[] lifeIndicators;
     private int _remainingLifes = 3;
@@ -44,6 +45,7 @@ public class PacStudentController : MonoBehaviour
         _spawnPosition = new Vector3(LevelManager.TileSize, -LevelManager.TileSize, 0);
         transform.position = _spawnPosition;
         dust.Stop();
+        deathMark.Stop();
     }
 
     void Update()
@@ -273,7 +275,9 @@ public class PacStudentController : MonoBehaviour
         _paused = true;
         _audioSource.clip = deadClip;
         _audioSource.Play();
+        deathMark.Play();
         yield return new WaitForSeconds(2.5f);
+        deathMark.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         _animator.SetBool("dead", false);
         _paused = false;
         _animator.SetTrigger("right");
