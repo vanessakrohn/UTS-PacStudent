@@ -19,7 +19,7 @@ public class PacStudentController : MonoBehaviour
     private bool _mayBump = false;
     public GameObject[] lifeIndicators;
     private int _remainingLifes = 3;
-    private bool _paused = false;
+    public GameManager gameManager;
     public SpiderManager spiderManager;
 
     private enum UserInput
@@ -51,7 +51,7 @@ public class PacStudentController : MonoBehaviour
 
     void Update()
     {
-        if (_paused)
+        if (gameManager.isPaused)
         {
             lastInput = UserInput.None;
             currentInput = UserInput.None;
@@ -275,14 +275,14 @@ public class PacStudentController : MonoBehaviour
     private IEnumerator DeadCoroutine()
     {
         _animator.SetBool("dead", true);
-        _paused = true;
+        gameManager.isPaused = true;
         _audioSource.clip = deadClip;
         _audioSource.Play();
         deathMark.Play();
         yield return new WaitForSeconds(2.5f);
         deathMark.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         _animator.SetBool("dead", false);
-        _paused = false;
+        gameManager.isPaused = false;
         _animator.SetTrigger("right");
         _remainingLifes--;
         if (_remainingLifes >= 0)
