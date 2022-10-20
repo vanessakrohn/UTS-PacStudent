@@ -6225,6 +6225,8 @@ MonoBehaviour:
   countdown: {fileID: 1957021001}
   isPaused: 1
   backgroundMusicManager: {fileID: 1136233587}
+  timer: {fileID: 446085445}
+  time: 0
 --- !u!4 &879820677
 Transform:
   m_ObjectHideFlags: 0
