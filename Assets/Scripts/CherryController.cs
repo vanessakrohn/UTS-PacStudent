@@ -42,7 +42,7 @@ public class CherryController : MonoBehaviour
     {
         float randX = Random.Range(0.0f, 1.0f);
         float randY = Random.Range(0.0f, 1.0f);
-        int randSide = Random.Range(0, 3);
+        int randSide = Random.Range(0, 4);
         Vector3 randPos = Vector3.zero;
         Vector3 mirroredPoint = Vector3.zero;
         _renderer.enabled = true;

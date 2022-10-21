@@ -22,20 +22,11 @@ public class PacStudentController : MonoBehaviour
     public GameManager gameManager;
     public SpiderManager spiderManager;
 
-    private enum UserInput
-    {
-        Up,
-        Left,
-        Down,
-        Right,
-        None
-    }
+    // ReSharper disable once InconsistentNaming
+    private LevelManager.Direction lastInput = LevelManager.Direction.None;
 
     // ReSharper disable once InconsistentNaming
-    private UserInput lastInput = UserInput.None;
-
-    // ReSharper disable once InconsistentNaming
-    private UserInput currentInput = UserInput.None;
+    private LevelManager.Direction currentInput = LevelManager.Direction.None;
 
     // Start is called before the first frame update
     void Start()
@@ -53,8 +44,8 @@ public class PacStudentController : MonoBehaviour
     {
         if (gameManager.isPaused)
         {
-            lastInput = UserInput.None;
-            currentInput = UserInput.None;
+            lastInput = LevelManager.Direction.None;
+            currentInput = LevelManager.Direction.None;
             dust.Stop();
             return;
         }
@@ -62,22 +53,22 @@ public class PacStudentController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.W))
         {
-            lastInput = UserInput.Up;
+            lastInput = LevelManager.Direction.Up;
         }
 
         if (Input.GetKeyDown(KeyCode.A))
         {
-            lastInput = UserInput.Left;
+            lastInput = LevelManager.Direction.Left;
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            lastInput = UserInput.Down;
+            lastInput = LevelManager.Direction.Down;
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            lastInput = UserInput.Right;
+            lastInput = LevelManager.Direction.Right;
         }
 
         if (!_tweener.TweenExists(transform))
@@ -88,25 +79,25 @@ public class PacStudentController : MonoBehaviour
             }
             else
             {
-                if (IsWalkable(lastInput))
+                if (levelManager.IsWalkable(lastInput, transform.position))
                 {
                     currentInput = lastInput;
                 }
 
-                if (IsWalkable(currentInput))
+                if (levelManager.IsWalkable(currentInput, transform.position))
                 {
                     switch (currentInput)
                     {
-                        case UserInput.Up:
+                        case LevelManager.Direction.Up:
                             MoveUp();
                             break;
-                        case UserInput.Left:
+                        case LevelManager.Direction.Left:
                             MoveLeft();
                             break;
-                        case UserInput.Down:
+                        case LevelManager.Direction.Down:
                             MoveDown();
                             break;
-                        case UserInput.Right:
+                        case LevelManager.Direction.Right:
                             MoveRight();
                             break;
                     }
@@ -121,12 +112,6 @@ public class PacStudentController : MonoBehaviour
         }
     }
 
-    private bool IsWalkable(UserInput input)
-    {
-        return GetNeighbor(input) is LevelManager.Tile.Empty or LevelManager.Tile.StandardPellet
-            or LevelManager.Tile.PowerPellet;
-    }
-
     private bool ShouldTeleport()
     {
         int j = Mathf.RoundToInt(transform.position.x / LevelManager.TileSize);
@@ -134,16 +119,16 @@ public class PacStudentController : MonoBehaviour
 
         switch (lastInput)
         {
-            case UserInput.Up:
+            case LevelManager.Direction.Up:
                 i--;
                 break;
-            case UserInput.Left:
+            case LevelManager.Direction.Left:
                 j--;
                 break;
-            case UserInput.Down:
+            case LevelManager.Direction.Down:
                 i++;
                 break;
-            case UserInput.Right:
+            case LevelManager.Direction.Right:
                 j++;
                 break;
         }
@@ -156,32 +141,6 @@ public class PacStudentController : MonoBehaviour
         transform.position =
             new Vector3(LevelManager.TileSize * (levelManager.grid.GetLength(1) - 1) - transform.position.x,
                 transform.position.y);
-    }
-
-    private LevelManager.Tile GetNeighbor(UserInput input)
-    {
-        var indices = levelManager.getIndices(transform.position);
-        int i = indices.i;
-        int j = indices.j;
-        LevelManager.Tile tileNeighbour = LevelManager.Tile.Empty;
-
-        switch (input)
-        {
-            case UserInput.Up:
-                tileNeighbour = levelManager.grid[i - 1, j];
-                break;
-            case UserInput.Left:
-                tileNeighbour = levelManager.grid[i, j - 1];
-                break;
-            case UserInput.Down:
-                tileNeighbour = levelManager.grid[i + 1, j];
-                break;
-            case UserInput.Right:
-                tileNeighbour = levelManager.grid[i, j + 1];
-                break;
-        }
-
-        return tileNeighbour;
     }
 
     private void MoveRight()
@@ -219,7 +178,7 @@ public class PacStudentController : MonoBehaviour
     private void StartMovement()
     {
         _animator.speed = 1.0f;
-        if (GetNeighbor(currentInput) is LevelManager.Tile.StandardPellet or LevelManager.Tile.PowerPellet)
+        if (levelManager.GetNeighbor(currentInput, transform.position) is LevelManager.Tile.StandardPellet or LevelManager.Tile.PowerPellet)
         {
             _audioSource.clip = eatingClip;
         }
@@ -243,7 +202,7 @@ public class PacStudentController : MonoBehaviour
         {
             _mayBump = false;
             var bump = wallBump.transform.localPosition;
-            if (currentInput is UserInput.Right or UserInput.Up)
+            if (currentInput is LevelManager.Direction.Right or LevelManager.Direction.Up)
             {
                 bump.x = Mathf.Abs(bump.x);
             }

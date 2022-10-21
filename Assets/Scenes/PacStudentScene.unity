@@ -588,6 +588,7 @@ GameObject:
   - component: {fileID: 424918576}
   - component: {fileID: 424918575}
   - component: {fileID: 424918577}
+  - component: {fileID: 424918578}
   m_Layer: 0
   m_Name: Spider1
   m_TagString: Spider
@@ -745,6 +746,20 @@ MonoBehaviour:
   spiderManager: {fileID: 13615073}
   backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
+  levelManager: {fileID: 1415343005}
+  gameManager: {fileID: 879820676}
+--- !u!114 &424918578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424918571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3855e57e1cdc41c38e94b1cc395edc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &446085445
 GameObject:
   m_ObjectHideFlags: 0
@@ -6259,6 +6274,7 @@ GameObject:
   - component: {fileID: 970960271}
   - component: {fileID: 970960270}
   - component: {fileID: 970960272}
+  - component: {fileID: 970960273}
   m_Layer: 0
   m_Name: Spider4
   m_TagString: Spider
@@ -6416,6 +6432,20 @@ MonoBehaviour:
   spiderManager: {fileID: 13615073}
   backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
+  levelManager: {fileID: 1415343005}
+  gameManager: {fileID: 879820676}
+--- !u!114 &970960273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970960266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3855e57e1cdc41c38e94b1cc395edc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1004109614
 GameObject:
   m_ObjectHideFlags: 0
@@ -12997,6 +13027,7 @@ GameObject:
   - component: {fileID: 1670075733}
   - component: {fileID: 1670075734}
   - component: {fileID: 1670075735}
+  - component: {fileID: 1670075736}
   m_Layer: 0
   m_Name: Spider3
   m_TagString: Spider
@@ -13154,6 +13185,20 @@ MonoBehaviour:
   spiderManager: {fileID: 13615073}
   backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
+  levelManager: {fileID: 1415343005}
+  gameManager: {fileID: 879820676}
+--- !u!114 &1670075736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670075729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3855e57e1cdc41c38e94b1cc395edc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1678085217
 GameObject:
   m_ObjectHideFlags: 0
@@ -13332,6 +13377,7 @@ GameObject:
   - component: {fileID: 1898748774}
   - component: {fileID: 1898748773}
   - component: {fileID: 1898748775}
+  - component: {fileID: 1898748776}
   m_Layer: 0
   m_Name: Spider2
   m_TagString: Spider
@@ -13489,6 +13535,20 @@ MonoBehaviour:
   spiderManager: {fileID: 13615073}
   backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
+  levelManager: {fileID: 1415343005}
+  gameManager: {fileID: 879820676}
+--- !u!114 &1898748776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1898748769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3855e57e1cdc41c38e94b1cc395edc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1900467477
 GameObject:
   m_ObjectHideFlags: 0

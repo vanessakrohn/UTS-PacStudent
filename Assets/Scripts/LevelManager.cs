@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class LevelManager : MonoBehaviour
 {
@@ -41,6 +42,17 @@ public class LevelManager : MonoBehaviour
         JunctionLeft,
         JunctionRight
     }
+    
+    public enum Direction
+    {
+        Up,
+        Left,
+        Down,
+        Right,
+        None
+    }
+    
+    
 
     // Start is called before the first frame update
     void Start()
@@ -289,10 +301,10 @@ public class LevelManager : MonoBehaviour
             rawTile.SetActive(false);
         }
 
-        spiders[0].transform.position = new Vector3(TileSize * 13, -TileSize * 13, 0);
-        spiders[1].transform.position = new Vector3(TileSize * 14, -TileSize * 13, 0);
-        spiders[2].transform.position = new Vector3(TileSize * 13, -TileSize * 14, 0);
-        spiders[3].transform.position = new Vector3(TileSize * 14, -TileSize * 14, 0);
+        spiders[0].transform.position = new Vector3(TileSize * 12, -TileSize * 14, 0);
+        spiders[1].transform.position = new Vector3(TileSize * 15, -TileSize * 14, 0);
+        spiders[2].transform.position = new Vector3(TileSize * 12, -TileSize * 15, 0);
+        spiders[3].transform.position = new Vector3(TileSize * 15, -TileSize * 15, 0);
     }
 
     GameObject GetGameObject(Tile tile)
@@ -443,5 +455,37 @@ public class LevelManager : MonoBehaviour
         int j = Mathf.RoundToInt(position.x / TileSize);
         int i = Mathf.RoundToInt(-position.y /  TileSize);
         return (i,j);
+    }
+    
+    public Tile GetNeighbor(Direction direction, Vector3 position)
+    {
+        var indices = getIndices(position);
+        int i = indices.i;
+        int j = indices.j;
+        Tile tileNeighbour = Tile.Empty;
+
+        switch (direction)
+        {
+            case Direction.Up:
+                tileNeighbour = grid[i - 1, j];
+                break;
+            case Direction.Left:
+                tileNeighbour = grid[i, j - 1];
+                break;
+            case Direction.Down:
+                tileNeighbour = grid[i + 1, j];
+                break;
+            case Direction.Right:
+                tileNeighbour = grid[i, j + 1];
+                break;
+        }
+
+        return tileNeighbour;
+    }
+    
+    public bool IsWalkable(Direction direction, Vector3 position)
+    {
+        return GetNeighbor(direction, position) is Tile.Empty or Tile.StandardPellet
+            or Tile.PowerPellet;
     }
 }
