@@ -14,6 +14,8 @@ public class GhostController : MonoBehaviour
     private Tweener _tweener;
     private static float Speed = 0.4f;
     public GameManager gameManager;
+    private LevelManager.Direction _blockedMoveDirection = LevelManager.Direction.None;
+    public GameObject pacStudent;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +34,21 @@ public class GhostController : MonoBehaviour
 
         if (!_tweener.TweenExists(transform))
         {
-            Spider3();
+            if (gameObject.name == "Spider1")
+            {
+                Spider1();
+            }
+            else if (gameObject.name == "Spider2")
+            {
+                Spider2();
+            }
+            else if (gameObject.name == "Spider3")
+            {
+                Spider3();
+            }
+            else if (gameObject.name == "Spider4")
+            {
+            }
         }
     }
 
@@ -49,33 +65,115 @@ public class GhostController : MonoBehaviour
 
     private IEnumerator DeadCoroutine()
     {
-        _animator.SetTrigger("dead");
+        _animator.SetBool("dead", true);
         backgroundMusicManager.SpiderDead();
         scoreController.score += 300;
         yield return new WaitForSeconds(5.0f);
-        _animator.ResetTrigger("dead");
+        _animator.SetBool("dead", false);
+    }
+
+    private void Spider1()
+    {
+        Vector3 spiderPos = transform.position;
+        Vector3 pacStudentPos = pacStudent.transform.position;
+        ArrayList validDirections = new ArrayList();
+
+        if (spiderPos.x >= pacStudentPos.x)
+        {
+            validDirections.Add(LevelManager.Direction.Right);
+        }
+
+        if (spiderPos.x <= pacStudentPos.x)
+        {
+            validDirections.Add(LevelManager.Direction.Left);
+        }
+
+        if (spiderPos.y >= pacStudentPos.y)
+        {
+            validDirections.Add(LevelManager.Direction.Up);
+        }
+
+        if (spiderPos.y <= pacStudentPos.y)
+        {
+            validDirections.Add(LevelManager.Direction.Down);
+        }
+
+        if (MoveRandomly(validDirections) == LevelManager.Direction.None)
+        {
+            Spider3();
+        }
+    }
+    
+    private void Spider2()
+    {
+        Vector3 spiderPos = transform.position;
+        Vector3 pacStudentPos = pacStudent.transform.position;
+        ArrayList validDirections = new ArrayList();
+
+        if (spiderPos.x <= pacStudentPos.x)
+        {
+            validDirections.Add(LevelManager.Direction.Right);
+        }
+
+        if (spiderPos.x >= pacStudentPos.x)
+        {
+            validDirections.Add(LevelManager.Direction.Left);
+        }
+
+        if (spiderPos.y <= pacStudentPos.y)
+        {
+            validDirections.Add(LevelManager.Direction.Up);
+        }
+
+        if (spiderPos.y >= pacStudentPos.y)
+        {
+            validDirections.Add(LevelManager.Direction.Down);
+        }
+
+        if (MoveRandomly(validDirections) == LevelManager.Direction.None)
+        {
+            Spider3();
+        }
     }
 
     private void Spider3()
     {
-        LevelManager.Direction[] directions =
+        ArrayList directions = new ArrayList()
         {
             LevelManager.Direction.Up, LevelManager.Direction.Down, LevelManager.Direction.Left,
             LevelManager.Direction.Right
         };
-        ArrayList walkableDirections = new ArrayList();
-        
-        
-        for (int i = 0; i < directions.Length; i++)
+        if (MoveRandomly(directions) == LevelManager.Direction.None)
         {
-            if(levelManager.IsWalkable(directions[i], transform.position))
+            Move(_blockedMoveDirection);
+        }
+    }
+
+    private LevelManager.Direction MoveRandomly(ArrayList directions)
+    {
+        ArrayList walkableDirections = new ArrayList();
+        for (int i = 0; i < directions.Count; i++)
+        {
+            LevelManager.Direction direction = (LevelManager.Direction)directions[i];
+            if (levelManager.IsWalkable(direction, transform.position) && direction != _blockedMoveDirection)
             {
-                Debug.Log(directions[i]);
                 walkableDirections.Add(directions[i]);
             }
         }
+
+        if (walkableDirections.Count == 0)
+        {
+            return LevelManager.Direction.None;
+        }
+
         int randValue = Random.Range(0, walkableDirections.Count);
-        LevelManager.Direction nextDirection = (LevelManager.Direction) walkableDirections[randValue];
+        LevelManager.Direction nextDirection = (LevelManager.Direction)walkableDirections[randValue];
+        Move(nextDirection);
+        return nextDirection;
+    }
+
+    private void Move(LevelManager.Direction nextDirection)
+    {
         switch (nextDirection)
         {
             case LevelManager.Direction.Up:
@@ -92,13 +190,14 @@ public class GhostController : MonoBehaviour
                 break;
         }
     }
-    
+
     private void MoveRight()
     {
         StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position + new Vector3(LevelManager.TileSize, 0, 0),
             Speed);
         _animator.SetTrigger("right");
+        _blockedMoveDirection = LevelManager.Direction.Left;
     }
 
     private void MoveLeft()
@@ -107,6 +206,7 @@ public class GhostController : MonoBehaviour
         _tweener.AddTween(transform, transform.position, transform.position - new Vector3(LevelManager.TileSize, 0, 0),
             Speed);
         _animator.SetTrigger("left");
+        _blockedMoveDirection = LevelManager.Direction.Right;
     }
 
     private void MoveDown()
@@ -115,6 +215,7 @@ public class GhostController : MonoBehaviour
         _tweener.AddTween(transform, transform.position, transform.position - new Vector3(0, LevelManager.TileSize, 0),
             Speed);
         _animator.SetTrigger("down");
+        _blockedMoveDirection = LevelManager.Direction.Up;
     }
 
     private void MoveUp()
@@ -123,11 +224,11 @@ public class GhostController : MonoBehaviour
         _tweener.AddTween(transform, transform.position, transform.position + new Vector3(0, LevelManager.TileSize, 0),
             Speed);
         _animator.SetTrigger("up");
+        _blockedMoveDirection = LevelManager.Direction.Down;
     }
-    
+
     private void StartMovement()
     {
-        
         _animator.ResetTrigger("right");
         _animator.ResetTrigger("left");
         _animator.ResetTrigger("up");

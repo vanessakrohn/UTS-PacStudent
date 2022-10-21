@@ -748,6 +748,7 @@ MonoBehaviour:
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
   gameManager: {fileID: 879820676}
+  pacStudent: {fileID: 1283208289}
 --- !u!114 &424918578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6434,6 +6435,7 @@ MonoBehaviour:
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
   gameManager: {fileID: 879820676}
+  pacStudent: {fileID: 1283208289}
 --- !u!114 &970960273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13187,6 +13189,7 @@ MonoBehaviour:
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
   gameManager: {fileID: 879820676}
+  pacStudent: {fileID: 1283208289}
 --- !u!114 &1670075736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13537,6 +13540,7 @@ MonoBehaviour:
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
   gameManager: {fileID: 879820676}
+  pacStudent: {fileID: 1283208289}
 --- !u!114 &1898748776
 MonoBehaviour:
   m_ObjectHideFlags: 0

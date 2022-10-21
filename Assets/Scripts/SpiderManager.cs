@@ -44,18 +44,20 @@ public class SpiderManager : MonoBehaviour
         
         for (int i = 0; i < spiders.Length; i++)
         {
-            _spiderAnimators[i].SetTrigger("scared");
+            _spiderAnimators[i].SetBool("scared", true);
         }
         backgroundMusicManager.SpidersScared();
         timer.SetActive(true);
         yield return new WaitForSeconds(7.0f);
         for (int i = 0; i < spiders.Length; i++)
         {
-            _spiderAnimators[i].SetTrigger("recovering");
+            _spiderAnimators[i].SetBool("scared", false);
+            _spiderAnimators[i].SetBool("recovering", true);
         }
         yield return new WaitForSeconds(3.0f);
         for (int i = 0; i < spiders.Length; i++)
         {
+            _spiderAnimators[i].SetBool("recovering", false);
             _spiderAnimators[i].SetTrigger("left");
         }
         backgroundMusicManager.SpidersNormal();
