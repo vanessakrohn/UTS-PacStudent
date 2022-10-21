@@ -5,23 +5,24 @@ using UnityEngine.UI;
 
 public class SpiderManager : MonoBehaviour
 {
-    private Animator[] _spiderAnimators;
-    public GameObject[] spiders;
     public BackgroundMusicManager backgroundMusicManager;
     public GameObject timer;
-    private Text timerText;
+    private Text _timerText;
     public float time;
-    public bool areScared = false;
+
+    public enum State
+    {
+        Walking,
+        Scared,
+        Recovering
+    }
+
+    public State state = State.Walking;
 
     // Start is called before the first frame update
     void Start()
     {
-        _spiderAnimators = new Animator[4];
-        for (int i = 0; i < spiders.Length; i++)
-        {
-            _spiderAnimators[i] = spiders[i].GetComponent<Animator>();
-            timerText = timer.GetComponent<Text>();
-        }
+        _timerText = timer.GetComponent<Text>();
         timer.SetActive(false);
     }
 
@@ -29,7 +30,7 @@ public class SpiderManager : MonoBehaviour
     void Update()
     {
         float remainingTime = Mathf.Ceil(10.0f - (Time.time - time));
-        timerText.text = "Scared Spiders for: " + remainingTime.ToString();
+        _timerText.text = "Scared Spiders for: " + remainingTime.ToString();
     }
 
     public void ScaredState()
@@ -39,30 +40,20 @@ public class SpiderManager : MonoBehaviour
 
     private IEnumerator SpiderStatesCoroutine()
     {
+        state = State.Scared;
         time = Time.time;
-        areScared = true;
-        
-        for (int i = 0; i < spiders.Length; i++)
-        {
-            _spiderAnimators[i].SetBool("scared", true);
-        }
         backgroundMusicManager.SpidersScared();
         timer.SetActive(true);
         yield return new WaitForSeconds(7.0f);
-        for (int i = 0; i < spiders.Length; i++)
-        {
-            _spiderAnimators[i].SetBool("scared", false);
-            _spiderAnimators[i].SetBool("recovering", true);
-        }
+        state = State.Recovering;
         yield return new WaitForSeconds(3.0f);
-        for (int i = 0; i < spiders.Length; i++)
-        {
-            _spiderAnimators[i].SetBool("recovering", false);
-            _spiderAnimators[i].SetTrigger("left");
-        }
+        state = State.Walking;
         backgroundMusicManager.SpidersNormal();
         timer.SetActive(false);
-        areScared = false;
     }
-    
+
+    public bool AreScared()
+    {
+        return state is State.Scared or State.Recovering;
+    }
 }

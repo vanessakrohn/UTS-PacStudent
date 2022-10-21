@@ -4,7 +4,6 @@ using UnityEngine.UIElements;
 public class LevelManager : MonoBehaviour
 {
     public GameObject[] rawTiles;
-    public GameObject[] spiders;
     public static float TileSize = 128 / 100f;
     public Tile[,] grid;
 
@@ -300,11 +299,6 @@ public class LevelManager : MonoBehaviour
         {
             rawTile.SetActive(false);
         }
-
-        spiders[0].transform.position = new Vector3(TileSize * 12, -TileSize * 14, 0);
-        spiders[1].transform.position = new Vector3(TileSize * 15, -TileSize * 14, 0);
-        spiders[2].transform.position = new Vector3(TileSize * 12, -TileSize * 15, 0);
-        spiders[3].transform.position = new Vector3(TileSize * 15, -TileSize * 15, 0);
     }
 
     GameObject GetGameObject(Tile tile)

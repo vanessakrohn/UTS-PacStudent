@@ -7,7 +7,7 @@ public class PacStudentController : MonoBehaviour
     private Tweener _tweener;
     private Animator _animator;
     private AudioSource _audioSource;
-    private static float Speed = 0.4f;
+    private static float WalkingDuration = 0.4f;
     public LevelManager levelManager;
     public AudioClip movingClip;
     public AudioClip eatingClip;
@@ -20,7 +20,6 @@ public class PacStudentController : MonoBehaviour
     public GameObject[] lifeIndicators;
     private int _remainingLifes = 3;
     public GameManager gameManager;
-    public SpiderManager spiderManager;
 
     // ReSharper disable once InconsistentNaming
     private LevelManager.Direction lastInput = LevelManager.Direction.None;
@@ -147,7 +146,7 @@ public class PacStudentController : MonoBehaviour
     {
         StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position + new Vector3(LevelManager.TileSize, 0, 0),
-            Speed);
+            WalkingDuration);
         _animator.SetTrigger("right");
     }
 
@@ -155,7 +154,7 @@ public class PacStudentController : MonoBehaviour
     {
         StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position - new Vector3(LevelManager.TileSize, 0, 0),
-            Speed);
+            WalkingDuration);
         _animator.SetTrigger("left");
     }
 
@@ -163,7 +162,7 @@ public class PacStudentController : MonoBehaviour
     {
         StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position - new Vector3(0, LevelManager.TileSize, 0),
-            Speed);
+            WalkingDuration);
         _animator.SetTrigger("down");
     }
 
@@ -171,7 +170,7 @@ public class PacStudentController : MonoBehaviour
     {
         StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position + new Vector3(0, LevelManager.TileSize, 0),
-            Speed);
+            WalkingDuration);
         _animator.SetTrigger("up");
     }
 
@@ -220,18 +219,7 @@ public class PacStudentController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Spider"))
-        {
-            if (!spiderManager.areScared)
-            {
-                StartCoroutine(DeadCoroutine());
-            }
-        }
-    }
-
-    private IEnumerator DeadCoroutine()
+    public IEnumerator DeadCoroutine()
     {
         if (!gameManager.isPaused)
         {
@@ -250,7 +238,7 @@ public class PacStudentController : MonoBehaviour
                 }
             }
             yield return new WaitForSeconds(2.5f);
-            
+
             if (_remainingLifes > 0)
             {
                 transform.position = _spawnPosition;

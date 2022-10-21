@@ -171,15 +171,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c95bb2a79bbea419898f42e99ec1df11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spiders:
-  - {fileID: 424918571}
-  - {fileID: 1898748769}
-  - {fileID: 1670075729}
-  - {fileID: 970960266}
   backgroundMusicManager: {fileID: 1136233587}
   timer: {fileID: 1329387712}
   time: 0
-  areScared: 0
+  state: 0
 --- !u!1 &49915876
 GameObject:
   m_ObjectHideFlags: 0
@@ -747,6 +742,7 @@ MonoBehaviour:
   backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
+  pacStudentController: {fileID: 1283208295}
   gameManager: {fileID: 879820676}
   pacStudent: {fileID: 1283208289}
 --- !u!114 &424918578
@@ -6434,6 +6430,7 @@ MonoBehaviour:
   backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
+  pacStudentController: {fileID: 1283208295}
   gameManager: {fileID: 879820676}
   pacStudent: {fileID: 1283208289}
 --- !u!114 &970960273
@@ -12005,7 +12002,6 @@ MonoBehaviour:
   - {fileID: 720250570}
   - {fileID: 1506988897}
   gameManager: {fileID: 879820676}
-  spiderManager: {fileID: 13615073}
 --- !u!114 &1283208296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12445,11 +12441,6 @@ MonoBehaviour:
   - {fileID: 300983040}
   - {fileID: 1617633532}
   - {fileID: 1156412281}
-  spiders:
-  - {fileID: 424918571}
-  - {fileID: 1898748769}
-  - {fileID: 1670075729}
-  - {fileID: 970960266}
 --- !u!4 &1415343006
 Transform:
   m_ObjectHideFlags: 0
@@ -13188,6 +13179,7 @@ MonoBehaviour:
   backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
+  pacStudentController: {fileID: 1283208295}
   gameManager: {fileID: 879820676}
   pacStudent: {fileID: 1283208289}
 --- !u!114 &1670075736
@@ -13539,6 +13531,7 @@ MonoBehaviour:
   backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
+  pacStudentController: {fileID: 1283208295}
   gameManager: {fileID: 879820676}
   pacStudent: {fileID: 1283208289}
 --- !u!114 &1898748776

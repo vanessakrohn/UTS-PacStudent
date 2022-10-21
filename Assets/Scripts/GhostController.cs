@@ -10,15 +10,19 @@ public class GhostController : MonoBehaviour
     public BackgroundMusicManager backgroundMusicManager;
     public ScoreController scoreController;
     public LevelManager levelManager;
+    public PacStudentController pacStudentController;
 
     private Tweener _tweener;
 
-    private static float Speed = 0.4f;
+    private static float WalkingDuration = 0.4f;
+    private static float RespawnSpeed = 10.0f;
+
     public GameManager gameManager;
     private LevelManager.Direction _blockedMoveDirection = LevelManager.Direction.None;
-    public GameObject pacStudent;
     private Ghost4MovementGrid _ghost4MovementGrid;
     private bool _ghost4Flip = false;
+    private bool _isDead = false;
+    private Vector3 _startPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +30,24 @@ public class GhostController : MonoBehaviour
         _animator = gameObject.GetComponent<Animator>();
         _tweener = gameObject.GetComponent<Tweener>();
         _ghost4MovementGrid = new Ghost4MovementGrid();
+
+        switch (gameObject.name)
+        {
+            case "Spider1":
+                _startPosition = new Vector3(LevelManager.TileSize * 12, -LevelManager.TileSize * 14, 0);
+                break;
+            case "Spider2":
+                _startPosition = new Vector3(LevelManager.TileSize * 15, -LevelManager.TileSize * 14, 0);
+                break;
+            case "Spider3":
+                _startPosition = new Vector3(LevelManager.TileSize * 12, -LevelManager.TileSize * 15, 0);
+                break;
+            case "Spider4":
+                _startPosition = new Vector3(LevelManager.TileSize * 15, -LevelManager.TileSize * 15, 0);
+                break;
+        }
+
+        transform.position = _startPosition;
     }
 
     // Update is called once per frame
@@ -36,6 +58,10 @@ public class GhostController : MonoBehaviour
             return;
         }
 
+        _animator.SetBool("dead", _isDead);
+        _animator.SetBool("scared", spiderManager.state == SpiderManager.State.Scared);
+        _animator.SetBool("recovering", spiderManager.state == SpiderManager.State.Recovering);
+
         if (!_tweener.TweenExists(transform))
         {
             if (levelManager.InSpawnArea(transform.position))
@@ -44,7 +70,7 @@ public class GhostController : MonoBehaviour
                 return;
             }
 
-            if (spiderManager.areScared)
+            if (spiderManager.AreScared())
             {
                 Spider1();
                 return;
@@ -70,28 +96,38 @@ public class GhostController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (_isDead) return;
+
         if (other.gameObject.CompareTag("Player"))
         {
-            if (spiderManager.areScared)
+            if (spiderManager.AreScared())
             {
                 StartCoroutine(DeadCoroutine());
+            }
+            else
+            {
+                StartCoroutine(pacStudentController.DeadCoroutine());
             }
         }
     }
 
     private IEnumerator DeadCoroutine()
     {
-        _animator.SetBool("dead", true);
         backgroundMusicManager.SpiderDead();
         scoreController.score += 300;
-        yield return new WaitForSeconds(5.0f);
-        _animator.SetBool("dead", false);
+        _isDead = true;
+        _tweener.RemoveTween(transform);
+        var distance = (transform.position - _startPosition).magnitude;
+        float duration = distance / RespawnSpeed;
+        _tweener.AddTween(transform, transform.position, _startPosition, duration);
+        yield return new WaitForSeconds(duration);
+        _isDead = false;
     }
 
     private void Spider1()
     {
         Vector3 spiderPos = transform.position;
-        Vector3 pacStudentPos = pacStudent.transform.position;
+        Vector3 pacStudentPos = pacStudentController.transform.position;
         ArrayList validDirections = new ArrayList();
 
         if (spiderPos.x >= pacStudentPos.x)
@@ -123,7 +159,7 @@ public class GhostController : MonoBehaviour
     private void Spider2()
     {
         Vector3 spiderPos = transform.position;
-        Vector3 pacStudentPos = pacStudent.transform.position;
+        Vector3 pacStudentPos = pacStudentController.transform.position;
         ArrayList validDirections = new ArrayList();
 
         if (spiderPos.x <= pacStudentPos.x)
@@ -256,7 +292,7 @@ public class GhostController : MonoBehaviour
     {
         StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position + new Vector3(LevelManager.TileSize, 0, 0),
-            Speed);
+            WalkingDuration);
         _animator.SetTrigger("right");
         _blockedMoveDirection = LevelManager.Direction.Left;
     }
@@ -265,7 +301,7 @@ public class GhostController : MonoBehaviour
     {
         StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position - new Vector3(LevelManager.TileSize, 0, 0),
-            Speed);
+            WalkingDuration);
         _animator.SetTrigger("left");
         _blockedMoveDirection = LevelManager.Direction.Right;
     }
@@ -274,7 +310,7 @@ public class GhostController : MonoBehaviour
     {
         StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position - new Vector3(0, LevelManager.TileSize, 0),
-            Speed);
+            WalkingDuration);
         _animator.SetTrigger("down");
         _blockedMoveDirection = LevelManager.Direction.Up;
     }
@@ -283,7 +319,7 @@ public class GhostController : MonoBehaviour
     {
         StartMovement();
         _tweener.AddTween(transform, transform.position, transform.position + new Vector3(0, LevelManager.TileSize, 0),
-            Speed);
+            WalkingDuration);
         _animator.SetTrigger("up");
         _blockedMoveDirection = LevelManager.Direction.Down;
     }

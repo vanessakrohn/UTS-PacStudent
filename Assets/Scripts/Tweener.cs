@@ -48,6 +48,11 @@ public class Tweener : MonoBehaviour
         }
     }
 
+    public void RemoveTween(Transform target)
+    {
+        _activeTweens.RemoveAll(x => x.Target == target);
+    }
+
     public bool TweenExists(Transform target)
     {
         return _activeTweens.Exists(x => x.Target == target);
