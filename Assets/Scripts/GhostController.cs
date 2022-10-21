@@ -44,6 +44,12 @@ public class GhostController : MonoBehaviour
                 return;
             }
 
+            if (spiderManager.areScared)
+            {
+                Spider1();
+                return;
+            }
+
             switch (gameObject.name)
             {
                 case "Spider1":
