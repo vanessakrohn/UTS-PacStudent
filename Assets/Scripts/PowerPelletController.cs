@@ -24,7 +24,7 @@ public class PowerPelletController : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             Destroy(gameObject);
-            var indices = levelManager.getIndices(transform.position);
+            var indices = levelManager.GetIndices(transform.position);
             int i = indices.i;
             int j = indices.j;
             levelManager.grid[i, j] = LevelManager.Tile.Empty;

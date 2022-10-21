@@ -450,16 +450,16 @@ public class LevelManager : MonoBehaviour
         return tile;
     }
 
-    public (int i, int j) getIndices(Vector3 position)
+    public (int i, int j) GetIndices(Vector3 position)
     {
         int j = Mathf.RoundToInt(position.x / TileSize);
         int i = Mathf.RoundToInt(-position.y / TileSize);
         return (i, j);
     }
 
-    public Tile GetNeighbor(Direction direction, Vector3 position)
+    public (int i, int j) GetNeighborIndices(Direction direction, Vector3 position)
     {
-        var indices = getIndices(position);
+        var indices = GetIndices(position);
         int i = indices.i;
         int j = indices.j;
 
@@ -483,6 +483,15 @@ public class LevelManager : MonoBehaviour
                 break;
         }
 
+        return (i, j);
+    }
+
+    public Tile GetNeighbor(Direction direction, Vector3 position)
+    {
+        var indices = GetNeighborIndices(direction, position);
+        int i = indices.i;
+        int j = indices.j;
+
         if (grid.GetLength(0) <= i || grid.GetLength(1) <= j || i < 0 || j < 0)
         {
             return Tile.Outside;
@@ -497,5 +506,24 @@ public class LevelManager : MonoBehaviour
     {
         return GetNeighbor(direction, position) is Tile.Empty or Tile.StandardPellet
             or Tile.PowerPellet;
+    }
+
+    public bool InSpawnArea(Vector3 position)
+    {
+        var indices = GetIndices(position);
+        return IsSpawnAreaIndices(indices);
+    }
+
+    public bool IsNeighborInSpawnArea(Direction direction, Vector3 position)
+    {
+        var indices = GetNeighborIndices(direction, position);
+        return IsSpawnAreaIndices(indices);
+    }
+
+    private bool IsSpawnAreaIndices((int i, int j) indices)
+    {
+        int i = indices.i;
+        int j = indices.j;
+        return i is >= 12 and <= 16 && j is >= 11 and <= 16;
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,17 +10,22 @@ public class GhostController : MonoBehaviour
     public BackgroundMusicManager backgroundMusicManager;
     public ScoreController scoreController;
     public LevelManager levelManager;
+
     private Tweener _tweener;
+
     private static float Speed = 0.4f;
     public GameManager gameManager;
     private LevelManager.Direction _blockedMoveDirection = LevelManager.Direction.None;
     public GameObject pacStudent;
+    private Ghost4MovementGrid _ghost4MovementGrid;
+    private bool _ghost4Flip = false;
 
     // Start is called before the first frame update
     void Start()
     {
         _animator = gameObject.GetComponent<Animator>();
         _tweener = gameObject.GetComponent<Tweener>();
+        _ghost4MovementGrid = new Ghost4MovementGrid();
     }
 
     // Update is called once per frame
@@ -34,20 +38,26 @@ public class GhostController : MonoBehaviour
 
         if (!_tweener.TweenExists(transform))
         {
-            if (gameObject.name == "Spider1")
+            if (levelManager.InSpawnArea(transform.position))
             {
-                Spider1();
+                Spider4();
+                return;
             }
-            else if (gameObject.name == "Spider2")
+
+            switch (gameObject.name)
             {
-                Spider2();
-            }
-            else if (gameObject.name == "Spider3")
-            {
-                Spider3();
-            }
-            else if (gameObject.name == "Spider4")
-            {
+                case "Spider1":
+                    Spider1();
+                    break;
+                case "Spider2":
+                    Spider2();
+                    break;
+                case "Spider3":
+                    Spider3();
+                    break;
+                case "Spider4":
+                    Spider4();
+                    break;
             }
         }
     }
@@ -103,7 +113,7 @@ public class GhostController : MonoBehaviour
             Spider3();
         }
     }
-    
+
     private void Spider2()
     {
         Vector3 spiderPos = transform.position;
@@ -149,16 +159,61 @@ public class GhostController : MonoBehaviour
         }
     }
 
+    private void Spider4()
+    {
+        var indices = levelManager.GetIndices(transform.position);
+        var nextDirection = _ghost4MovementGrid.movementMap[indices.i, indices.j];
+
+        if (_ghost4Flip)
+        {
+            if (indices.i == 14)
+            {
+                if (indices.j == 6)
+                {
+                    Move(LevelManager.Direction.Up);
+                    _ghost4Flip = false;
+                    return;
+                }
+
+                if (indices.j == 21)
+                {
+                    Move(LevelManager.Direction.Down);
+                    _ghost4Flip = false;
+                    return;
+                }
+            }
+
+            switch (nextDirection)
+            {
+                case LevelManager.Direction.Left:
+                    Move(LevelManager.Direction.Right);
+                    return;
+                case LevelManager.Direction.Right:
+                    Move(LevelManager.Direction.Left);
+                    return;
+            }
+        }
+
+        if (nextDirection == _blockedMoveDirection)
+        {
+            _ghost4Flip = true;
+        }
+
+        Move(nextDirection);
+    }
+
     private LevelManager.Direction MoveRandomly(ArrayList directions)
     {
         ArrayList walkableDirections = new ArrayList();
         for (int i = 0; i < directions.Count; i++)
         {
             LevelManager.Direction direction = (LevelManager.Direction)directions[i];
-            if (levelManager.IsWalkable(direction, transform.position) && direction != _blockedMoveDirection)
-            {
-                walkableDirections.Add(directions[i]);
-            }
+            if (!levelManager.IsWalkable(direction, transform.position)) continue;
+            if (direction == _blockedMoveDirection) continue;
+            if (!levelManager.InSpawnArea(transform.position) &&
+                levelManager.IsNeighborInSpawnArea(direction, transform.position)) continue;
+
+            walkableDirections.Add(directions[i]);
         }
 
         if (walkableDirections.Count == 0)
