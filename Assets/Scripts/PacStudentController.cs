@@ -20,12 +20,8 @@ public class PacStudentController : MonoBehaviour
     public GameObject[] lifeIndicators;
     private int _remainingLifes = 3;
     public GameManager gameManager;
-
-    // ReSharper disable once InconsistentNaming
-    private LevelManager.Direction lastInput = LevelManager.Direction.None;
-
-    // ReSharper disable once InconsistentNaming
-    private LevelManager.Direction currentInput = LevelManager.Direction.None;
+    public LevelManager.Direction lastInput = LevelManager.Direction.None;
+    public LevelManager.Direction currentInput = LevelManager.Direction.None;
 
     // Start is called before the first frame update
     void Start()

@@ -111,7 +111,7 @@ public class GhostController : MonoBehaviour
         }
     }
 
-    private IEnumerator DeadCoroutine()
+    public IEnumerator DeadCoroutine()
     {
         backgroundMusicManager.SpiderDead();
         scoreController.score += 300;
