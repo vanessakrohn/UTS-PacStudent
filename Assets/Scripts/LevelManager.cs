@@ -1,19 +1,11 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class LevelManager : MonoBehaviour
 {
     public GameObject[] rawTiles;
-    public GameObject player;
-
-    private float _tileSize;
-
-    private Tweener _tweener;
-    private Animator _playerAnimator;
-    private int _nextTween;
-    private Vector3 _posTopLeft;
-    private Vector3 _posTopRight;
-    private Vector3 _posBottomLeft;
-    private Vector3 _posBottomRight;
+    public static float TileSize = 128 / 100f;
+    public Tile[,] grid;
 
     private enum RawTile
     {
@@ -27,7 +19,7 @@ public class LevelManager : MonoBehaviour
         Junction = 7
     }
 
-    private enum Tile
+    public enum Tile
     {
         Empty,
         OutsideCornerTopRight,
@@ -47,8 +39,19 @@ public class LevelManager : MonoBehaviour
         JunctionTop,
         JunctionDown,
         JunctionLeft,
-        JunctionRight
+        JunctionRight,
+        Outside
     }
+
+    public enum Direction
+    {
+        Up,
+        Left,
+        Down,
+        Right,
+        None
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -211,30 +214,29 @@ public class LevelManager : MonoBehaviour
 
         var n = tiles.GetLength(0) * 2 - 1;
         var m = tiles.GetLength(1) * 2;
-        var copiedTiles = new Tile[n, m];
+        grid = new Tile[n, m];
         for (var i = 0; i < tiles.GetLength(0); i++)
         {
             for (var j = 0; j < tiles.GetLength(1); j++)
             {
-                copiedTiles[i, j] = tiles[i, j];
-                copiedTiles[(n - 1) - i, j] = MirrorY(tiles[i, j]);
-                copiedTiles[i, (m - 1) - j] = MirrorX(tiles[i, j]);
-                copiedTiles[(n - 1) - i, (m - 1) - j] = MirrorX(MirrorY(tiles[i, j]));
+                grid[i, j] = tiles[i, j];
+                grid[(n - 1) - i, j] = MirrorY(tiles[i, j]);
+                grid[i, (m - 1) - j] = MirrorX(tiles[i, j]);
+                grid[(n - 1) - i, (m - 1) - j] = MirrorX(MirrorY(tiles[i, j]));
             }
         }
 
-        _tileSize = rawTiles[0].GetComponent<SpriteRenderer>().bounds.size.x;
 
-        for (var i = 0; i < copiedTiles.GetLength(0); i++)
+        for (var i = 0; i < grid.GetLength(0); i++)
         {
-            for (var j = 0; j < copiedTiles.GetLength(1); j++)
+            for (var j = 0; j < grid.GetLength(1); j++)
             {
-                var tile = copiedTiles[i, j];
+                var tile = grid[i, j];
                 var rawTileGameObject = GetGameObject(tile);
 
                 if (rawTileGameObject == null) continue;
                 var tileGameObject =
-                    Instantiate(rawTileGameObject, new Vector3(j * _tileSize, -i * _tileSize, 0), Quaternion.identity);
+                    Instantiate(rawTileGameObject, new Vector3(j * TileSize, -i * TileSize, 0), Quaternion.identity);
 
                 if (tile == Tile.OutsideCornerDownLeft)
                 {
@@ -297,51 +299,6 @@ public class LevelManager : MonoBehaviour
         {
             rawTile.SetActive(false);
         }
-
-        _tweener = gameObject.GetComponent<Tweener>();
-        _playerAnimator = player.GetComponent<Animator>();
-        _posTopLeft = new Vector3(_tileSize, -_tileSize, 0);
-        _posTopRight = new Vector3(_tileSize * 6, -_tileSize, 0);
-        _posBottomLeft = new Vector3(_tileSize, -_tileSize * 5, 0);
-        _posBottomRight = new Vector3(_tileSize * 6, -_tileSize * 5, 0);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (_tweener.TweenExists(player.transform)) return;
-
-        ResetTriggers();
-
-        switch (_nextTween)
-        {
-            case 0:
-                _tweener.AddTween(player.transform, _posTopLeft, _posTopRight, 2.5f);
-                _playerAnimator.SetTrigger("right");
-                break;
-            case 1:
-                _tweener.AddTween(player.transform, _posTopRight, _posBottomRight, 2.0f);
-                _playerAnimator.SetTrigger("down");
-                break;
-            case 2:
-                _tweener.AddTween(player.transform, _posBottomRight, _posBottomLeft, 2.5f);
-                _playerAnimator.SetTrigger("left");
-                break;
-            case 3:
-                _tweener.AddTween(player.transform, _posBottomLeft, _posTopLeft, 2.0f);
-                _playerAnimator.SetTrigger("up");
-                break;
-        }
-
-        _nextTween = (_nextTween + 1) % 4;
-    }
-
-    private void ResetTriggers()
-    {
-        _playerAnimator.ResetTrigger("right");
-        _playerAnimator.ResetTrigger("left");
-        _playerAnimator.ResetTrigger("up");
-        _playerAnimator.ResetTrigger("down");
     }
 
     GameObject GetGameObject(Tile tile)
@@ -485,5 +442,82 @@ public class LevelManager : MonoBehaviour
         }
 
         return tile;
+    }
+
+    public (int i, int j) GetIndices(Vector3 position)
+    {
+        int j = Mathf.RoundToInt(position.x / TileSize);
+        int i = Mathf.RoundToInt(-position.y / TileSize);
+        return (i, j);
+    }
+
+    public (int i, int j) GetNeighborIndices(Direction direction, Vector3 position)
+    {
+        var indices = GetIndices(position);
+        int i = indices.i;
+        int j = indices.j;
+
+        switch (direction)
+        {
+            case Direction.Up:
+
+                i--;
+                break;
+            case Direction.Left:
+
+                j--;
+                break;
+            case Direction.Down:
+
+                i++;
+                break;
+            case Direction.Right:
+
+                j++;
+                break;
+        }
+
+        return (i, j);
+    }
+
+    public Tile GetNeighbor(Direction direction, Vector3 position)
+    {
+        var indices = GetNeighborIndices(direction, position);
+        int i = indices.i;
+        int j = indices.j;
+
+        if (grid.GetLength(0) <= i || grid.GetLength(1) <= j || i < 0 || j < 0)
+        {
+            return Tile.Outside;
+        }
+        else
+        {
+            return grid[i, j];
+        }
+    }
+
+    public bool IsWalkable(Direction direction, Vector3 position)
+    {
+        return GetNeighbor(direction, position) is Tile.Empty or Tile.StandardPellet
+            or Tile.PowerPellet;
+    }
+
+    public bool InSpawnArea(Vector3 position)
+    {
+        var indices = GetIndices(position);
+        return IsSpawnAreaIndices(indices);
+    }
+
+    public bool IsNeighborInSpawnArea(Direction direction, Vector3 position)
+    {
+        var indices = GetNeighborIndices(direction, position);
+        return IsSpawnAreaIndices(indices);
+    }
+
+    private bool IsSpawnAreaIndices((int i, int j) indices)
+    {
+        int i = indices.i;
+        int j = indices.j;
+        return i is >= 12 and <= 16 && j is >= 11 and <= 16;
     }
 }
