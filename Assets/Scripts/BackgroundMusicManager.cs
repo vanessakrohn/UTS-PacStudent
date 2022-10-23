@@ -7,7 +7,6 @@ public class BackgroundMusicManager : MonoBehaviour
     public AudioClip spidersScared;
     public AudioClip spidersNormal;
     public AudioClip spiderDead;
-    private AudioClip _previousClip;
     public GameManager gameManager;
 
     // Start is called before the first frame update
@@ -16,7 +15,7 @@ public class BackgroundMusicManager : MonoBehaviour
         var audios = GetComponents<AudioSource>();
         _intro = audios[0];
         _background = audios[1];
-        _previousClip = spidersNormal;
+
         _intro.Pause();
     }
 
@@ -25,9 +24,12 @@ public class BackgroundMusicManager : MonoBehaviour
     {
         if (!_intro.isPlaying && !_background.isPlaying && !gameManager.isPaused)
         {
-            _background.loop = true;
-            _background.clip = _previousClip;
             _background.Play();
+        }
+
+        if (gameManager.isPaused)
+        {
+            _background.Pause();
         }
     }
 
@@ -35,21 +37,19 @@ public class BackgroundMusicManager : MonoBehaviour
     {
         _intro.Pause();
         _background.clip = spidersScared;
-        _previousClip = spidersScared;
+
     }
 
     public void SpidersNormal()
     {
         _intro.Pause();
         _background.clip = spidersNormal;
-        _previousClip = spidersNormal;
+   
     }
 
     public void SpiderDead()
     {
         _intro.Pause();
         _background.clip = spiderDead;
-        _background.loop = false;
-        _background.Play();
     }
 }

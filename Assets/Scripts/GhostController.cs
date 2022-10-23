@@ -7,7 +7,6 @@ public class GhostController : MonoBehaviour
 {
     public SpiderManager spiderManager;
     private Animator _animator;
-    public BackgroundMusicManager backgroundMusicManager;
     public ScoreController scoreController;
     public LevelManager levelManager;
     public PacStudentController pacStudentController;
@@ -21,7 +20,7 @@ public class GhostController : MonoBehaviour
     private LevelManager.Direction _blockedMoveDirection = LevelManager.Direction.None;
     private Ghost4MovementGrid _ghost4MovementGrid;
     private bool _ghost4Flip = false;
-    private bool _isDead = false;
+    public bool isDead = false;
     private Vector3 _startPosition;
 
     // Start is called before the first frame update
@@ -58,7 +57,7 @@ public class GhostController : MonoBehaviour
             return;
         }
 
-        _animator.SetBool("dead", _isDead);
+        _animator.SetBool("dead", isDead);
         _animator.SetBool("scared", spiderManager.state == SpiderManager.State.Scared);
         _animator.SetBool("recovering", spiderManager.state == SpiderManager.State.Recovering);
 
@@ -96,7 +95,7 @@ public class GhostController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (_isDead) return;
+        if (isDead) return;
 
         if (other.gameObject.CompareTag("Player"))
         {
@@ -113,15 +112,14 @@ public class GhostController : MonoBehaviour
 
     public IEnumerator DeadCoroutine()
     {
-        backgroundMusicManager.SpiderDead();
         scoreController.score += 300;
-        _isDead = true;
+        isDead = true;
         _tweener.RemoveTween(transform);
         var distance = (transform.position - _startPosition).magnitude;
         float duration = distance / RespawnSpeed;
         _tweener.AddTween(transform, transform.position, _startPosition, duration);
         yield return new WaitForSeconds(duration);
-        _isDead = false;
+        isDead = false;
     }
 
     private void Spider1()

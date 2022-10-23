@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +8,7 @@ public class SpiderManager : MonoBehaviour
     public GameObject timer;
     private Text _timerText;
     public float time;
+    public GhostController[] spiders;
 
     public enum State
     {
@@ -31,6 +31,18 @@ public class SpiderManager : MonoBehaviour
     {
         float remainingTime = Mathf.Ceil(10.0f - (Time.time - time));
         _timerText.text = "Scared Spiders for: " + remainingTime.ToString();
+        if (AnyDead())
+        {
+            backgroundMusicManager.SpiderDead();
+        }
+        else if (AreScared())
+        {
+            backgroundMusicManager.SpidersScared();
+        }
+        else
+        {
+            backgroundMusicManager.SpidersNormal();
+        }
     }
 
     public void ScaredState()
@@ -42,18 +54,29 @@ public class SpiderManager : MonoBehaviour
     {
         state = State.Scared;
         time = Time.time;
-        backgroundMusicManager.SpidersScared();
         timer.SetActive(true);
         yield return new WaitForSeconds(7.0f);
         state = State.Recovering;
         yield return new WaitForSeconds(3.0f);
         state = State.Walking;
-        backgroundMusicManager.SpidersNormal();
         timer.SetActive(false);
     }
 
     public bool AreScared()
     {
         return state is State.Scared or State.Recovering;
+    }
+
+    public bool AnyDead()
+    {
+        for (int i = 0; i < spiders.Length; i++)
+        {
+            if (spiders[i].isDead)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

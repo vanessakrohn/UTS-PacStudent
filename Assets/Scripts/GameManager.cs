@@ -52,7 +52,6 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         countdown.SetActive(false);
         isPaused = false;
-        backgroundMusicManager.SpidersNormal();
         startTime = Time.time;
         timerReady = true;
     }

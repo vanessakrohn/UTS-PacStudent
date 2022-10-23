@@ -174,6 +174,11 @@ MonoBehaviour:
   backgroundMusicManager: {fileID: 1136233587}
   timer: {fileID: 1329387712}
   time: 0
+  spiders:
+  - {fileID: 424918577}
+  - {fileID: 1898748775}
+  - {fileID: 1670075735}
+  - {fileID: 970960272}
   state: 0
 --- !u!1 &49915876
 GameObject:
@@ -739,11 +744,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spiderManager: {fileID: 13615073}
-  backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
   pacStudentController: {fileID: 1283208295}
   gameManager: {fileID: 879820676}
+  isDead: 0
 --- !u!114 &424918578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6427,11 +6432,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spiderManager: {fileID: 13615073}
-  backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
   pacStudentController: {fileID: 1283208295}
   gameManager: {fileID: 879820676}
+  isDead: 0
 --- !u!114 &970960273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13274,11 +13279,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spiderManager: {fileID: 13615073}
-  backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
   pacStudentController: {fileID: 1283208295}
   gameManager: {fileID: 879820676}
+  isDead: 0
 --- !u!114 &1670075736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18461,11 +18466,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spiderManager: {fileID: 13615073}
-  backgroundMusicManager: {fileID: 1136233587}
   scoreController: {fileID: 49915880}
   levelManager: {fileID: 1415343005}
   pacStudentController: {fileID: 1283208295}
   gameManager: {fileID: 879820676}
+  isDead: 0
 --- !u!114 &1898748776
 MonoBehaviour:
   m_ObjectHideFlags: 0
