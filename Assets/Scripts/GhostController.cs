@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.iOS;
 using Random = UnityEngine.Random;
 
 public class GhostController : MonoBehaviour
@@ -55,6 +56,11 @@ public class GhostController : MonoBehaviour
         if (gameManager.isPaused)
         {
             return;
+        }
+
+        if (spiderManager.state != SpiderManager.State.Walking)
+        {
+            _ghost4Flip = false;
         }
 
         _animator.SetBool("dead", isDead);
@@ -234,7 +240,7 @@ public class GhostController : MonoBehaviour
             }
         }
 
-        if (nextDirection == _blockedMoveDirection)
+        if (indices.i == 14 && indices.j is 0 or 27)
         {
             _ghost4Flip = true;
         }
