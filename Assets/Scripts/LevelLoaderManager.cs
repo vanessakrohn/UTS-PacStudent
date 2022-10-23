@@ -28,6 +28,11 @@ public class LevelLoaderManager : MonoBehaviour
     {
         SceneManager.LoadScene(1);
     }
+    
+    public void LoadLevel2()
+    {
+        SceneManager.LoadScene(2);
+    }
 
     private void Awake()
     {
